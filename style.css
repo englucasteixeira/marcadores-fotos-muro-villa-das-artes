@@ -1,47 +1,61 @@
+/* style.css */
+
+/* Reseta margens e paddings padrão do navegador e define altura total */
 html, body {
-    font-family: sans-serif;
+    margin: 0;
+    padding: 0;
     height: 100%;
-    margin: 0;
-    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Uma fonte mais moderna */
+    overflow: hidden; /* Impede barras de rolagem no corpo da página */
+    background-color: #f4f4f4; /* Cor de fundo para a página inteira */
 }
 
+/* Estilo para o container do mapa */
 #map {
-    height: 100vh;
     width: 100%;
-    margin: 0;
-    padding: 0;
+    height: 100%; /* Faz o mapa ocupar toda a altura e largura do body */
+    background-color: #e0e0e0; /* Cor de fundo enquanto o mapa carrega */
 }
 
-
-#legend {
-    position: absolute;
-    bottom: 20px;
-    left: 20px;
-    background: rgba(255, 255, 255, 0.9);
-    padding: 12px;
-    border-radius: 10px;
-    box-shadow: 3px 3px 12px rgba(0, 0, 0, 0.25);
-    font-family: Arial, sans-serif;
-    font-size: 16px;
+/* Estilos para a InfoWindow (janela de informações do marcador) */
+.gm-style .gm-style-iw-c { /* Contêiner principal da InfoWindow */
+    padding: 12px !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+    max-width: 300px !important; /* Define uma largura máxima para a InfoWindow */
 }
 
-#legend h3 {
-    margin: 0;
-    padding-bottom: 6px;
-    font-size: 18px;
+.gm-style .gm-style-iw-d { /* Conteúdo dentro da InfoWindow */
+    overflow: visible !important; /* Permite que o conteúdo não seja cortado, se necessário */
+    padding-right: 10px; /* Espaço para a barra de rolagem se o conteúdo for grande */
 }
 
-.legend-item {
+/* Estilo para o conteúdo personalizado dentro da InfoWindow */
+.custom-infowindow {
+    line-height: 1.5;
+}
+
+.custom-infowindow h3 {
+    margin-top: 0;
+    margin-bottom: 5px;
+    font-size: 1.2em; /* Tamanho do título do marcador */
+    color: #333;
+    font-weight: 600;
+}
+
+/* Opcional: Mensagem de carregamento (se você descomentar no HTML) */
+#map-loading {
     display: flex;
+    justify-content: center;
     align-items: center;
-    margin-bottom: 6px;
+    height: 100%;
+    text-align: center;
+    font-size: 1.2em;
+    color: #555;
 }
 
-.marker {
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    margin-right: 10px;
-    display: inline-block;
-    border: 1px solid #000;
+/* Estilo para mensagens de erro exibidas diretamente no div do mapa */
+#map p {
+    font-size: 1em;
+    line-height: 1.6;
 }

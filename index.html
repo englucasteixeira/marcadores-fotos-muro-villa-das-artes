@@ -1,54 +1,34 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Obras Araxá 2024</title>
+    <title>Fotos - Muro Villa das Artes</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="map"></div>
-    
-    <script src="map_markers.js"></script>
-    <script src="script.js"></script>
-    <script async
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBtafyfvb4cGU58l-XOxYHhcdHLhPJx7DI&callback=initMap">
-    </script>
-    <div id="legend">
-        <h3>Legenda</h3>
-        <div class="legend-item">
-            <span class="marker" style="background-color: #2E8B57;"></span>
-            Construção Residencial Unifamiliar ≤ 200m²
-        </div>
-        <div class="legend-item">
-            <span class="marker" style="background-color: #006400;"></span>
-            Construção Residencial Unifamiliar &gt; 200m²
-        </div>
-        <div class="legend-item">
-            <span class="marker" style="background-color: #FF6347;"></span>
-            Construção Residencial Multifamiliar &lt; 750m²
-        </div>
-        <div class="legend-item">
-            <span class="marker" style="background-color: #8B0000;"></span>
-            Construção Residencial Multifamiliar ≥ 750m²
-        </div>
-        <div class="legend-item">
-            <span class="marker" style="background-color: #87CEFA;"></span>
-            Construção Comercial &lt; 200m²
-        </div>
-        <div class="legend-item">
-            <span class="marker" style="background-color: #4682B4;"></span>
-            Construção Comercial 200m² - 750m²
-        </div>
-        <div class="legend-item">
-            <span class="marker" style="background-color: #00008B;"></span>
-            Construção Comercial &gt; 750m²
-        </div>
-        <div class="legend-item">
-            <span class="marker" style="background-color: #696969;"></span>
-            Outras destinações
-        </div>
+    <div id="map">
+        <!-- O mapa será renderizado aqui -->
+        <!-- Você pode adicionar uma mensagem de carregamento se desejar -->
+        <!-- <div id="map-loading">Carregando mapa...</div> -->
     </div>
-    
+
+    <!-- Carrega os dados dos marcadores primeiro -->
+    <script src="marcadores.js"></script>
+
+    <!-- Carrega o script principal do mapa -->
+    <script src="script.js"></script>
+
+    <!--
+    Carrega a API do Google Maps.
+    Substitua YOUR_API_KEY pela sua chave de API real.
+    O parâmetro 'callback=initMap' chama a função initMap após o carregamento da API.
+    'libraries=marker,maps' carrega as bibliotecas necessárias para AdvancedMarkerElement e Maps.
+    'v=beta' é frequentemente recomendado para usar os recursos mais recentes como AdvancedMarkerElement.
+    -->
+    <script async
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCiQ2xK6aeawbTlImwHI7SlXLUEhNrA6EY&callback=initMap&libraries=marker,maps&v=beta">
+    </script>
 </body>
 </html>
+
