@@ -1,3 +1,8 @@
+// Gerado automaticamente
+// Total de pastas processadas: 6
+// Total de imagens processadas: 163
+// Total de marcadores criados: 163
+
 const marcadoresInfo = [
   {
     "position": {
@@ -144,8 +149,8 @@ const marcadoresInfo = [
   },
   {
     "position": {
-      "lat": -19.6232694,
-      "lng": -46.9167333
+      "lat": 23.0,
+      "lng": 77.0
     },
     "name": "Armadura exposta - Foto 21",
     "imageFile": "Armadura exposta - Foto 21.jpg",
@@ -397,8 +402,8 @@ const marcadoresInfo = [
   },
   {
     "position": {
-      "lat": -19.6247944,
-      "lng": -46.9133389
+      "lat": 29.0,
+      "lng": 26.0
     },
     "name": "Armadura exposta - Foto 42",
     "imageFile": "Armadura exposta - Foto 42.jpg",
@@ -694,8 +699,8 @@ const marcadoresInfo = [
   },
   {
     "position": {
-      "lat": -19.6254611,
-      "lng": -46.9172056
+      "lat": 31.0,
+      "lng": 66.0
     },
     "name": "Bolhas e porosidade - Foto 10",
     "imageFile": "Bolhas e porosidade - Foto 10.jpg",
@@ -903,8 +908,8 @@ const marcadoresInfo = [
   },
   {
     "position": {
-      "lat": -19.6236444,
-      "lng": -46.916925
+      "lat": 25.0,
+      "lng": 12.0
     },
     "name": "Bolhas e porosidade - Foto 28",
     "imageFile": "Bolhas e porosidade - Foto 28.jpg",
@@ -914,8 +919,8 @@ const marcadoresInfo = [
   },
   {
     "position": {
-      "lat": -19.6233917,
-      "lng": -46.9169083
+      "lat": 24.0,
+      "lng": 21.0
     },
     "name": "Bolhas e porosidade - Foto 29",
     "imageFile": "Bolhas e porosidade - Foto 29.jpg",
@@ -1793,3 +1798,24 @@ const marcadoresInfo = [
     "ocrText": "19°37'27,26\"S 46°55'1,97\"O"
   }
 ];
+
+// Exemplo de uso (Google Maps API):
+// function initMap() {
+//   const map = new google.maps.Map(document.getElementById('map'), {
+//     zoom: 4, center: marcadoresInfo.length > 0 ? marcadoresInfo[0].position : {lat: -14.235, lng: -51.925}
+//   });
+//   marcadoresInfo.forEach(info => {
+//     const marker = new google.maps.Marker({ 
+//        position: info.position, 
+//        map: map, 
+//        title: `${info.name} (Categoria: ${info.categoria})` 
+//     });
+//     const iwContent = `<div><strong>${info.name}</strong></div>
+//                      <div><small>Arquivo: ${info.imageFile}</small></div>
+//                      <div><small>Categoria: ${info.categoria}</small></div>
+//                      <hr><pre style='max-height:150px;overflow-y:auto;white-space:pre-wrap;word-break:break-all;'>${info.ocrText}</pre>`;
+//     const infowindow = new google.maps.InfoWindow({ content: iwContent });
+//     marker.addListener('click', () => { infowindow.open(map, marker); });
+//   });
+// }
+// window.initMap = initMap;

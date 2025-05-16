@@ -1,5 +1,3 @@
-// script.js
-
 let map;
 let markers = [];
 let infoWindows = [];
@@ -30,19 +28,16 @@ async function initMap() {
         const { Map } = await google.maps.importLibrary("maps");
         const { AdvancedMarkerElement, PinElement } = await google.maps.importLibrary("marker");
 
-        // Coordenadas para definir a área inicial e o centro
-        const coord1 = { lat: -19.621287, lng: -46.916292 };
-        const coord2 = { lat: -19.628137, lng: -46.913248 };
-
-        // Calcular o centro da diagonal
-        const centerLat = (coord1.lat + coord2.lat) / 2;
-        const centerLng = (coord1.lng + coord2.lng) / 2;
-        const calculatedMapCenter = { lat: centerLat, lng: centerLng };
+        // Definindo o centro fixo e o zoom inicial
+        const centerPosition = {
+            lat: -19.624477, // Latitude do centro desejado
+            lng: -46.915253  // Longitude do centro desejado
+        };
 
         map = new Map(mapDiv, {
-            center: calculatedMapCenter, // O centro será ajustado pelo fitBounds abaixo, mas é bom ter um inicial
-            zoom: 17, // Um zoom inicial razoável, será ajustado por fitBounds
-            mapId: "MEU_MAPA_ID_PERSONALIZADO",
+            center: centerPosition,
+            zoom: 17, // Zoom mais aproximado (valor entre 15-18 é bom para visualização de bairros/quarteirões)
+            mapId: "VILLA_DAS_ARTES",
             mapTypeControl: true,
             mapTypeControlOptions: {
                 style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
@@ -57,29 +52,37 @@ async function initMap() {
             mapTypeId: google.maps.MapTypeId.SATELLITE, // Iniciar com a camada de satélite
         });
 
-        // Definir os limites iniciais com base nas coordenadas fornecidas
-        const initialBounds = new google.maps.LatLngBounds();
-        initialBounds.extend(new google.maps.LatLng(coord1.lat, coord1.lng));
-        initialBounds.extend(new google.maps.LatLng(coord2.lat, coord2.lng));
-
-        // Ajustar o mapa para esses limites iniciais
-        // Isso definirá o centro e o zoom para englobar a área das duas coordenadas
-        map.fitBounds(initialBounds);
-
-        // Bounds para os marcadores (se houver)
-        const markerBounds = new google.maps.LatLngBounds();
-        let validMarkersCount = 0;
+        // Constante para definir o raio máximo em metros para exibir marcadores
+        const MAX_DISTANCE_RADIUS = 1000; // 1km em metros
 
         if (marcadoresInfo.length === 0) {
             console.warn("Nenhum marcador para exibir. O mapa permanecerá na visualização definida pelas coordenadas fornecidas.");
         } else {
             marcadoresInfo.forEach((markerData, index) => {
+                // Validação básica das coordenadas
                 if (!markerData.position || typeof markerData.position.lat !== 'number' || typeof markerData.position.lng !== 'number') {
                     console.warn(`Marcador ${index} ('${markerData.name}') tem dados de posição inválidos ou ausentes. Ignorando.`, markerData);
                     return;
                 }
                 if (markerData.position.lat < -90 || markerData.position.lat > 90 || markerData.position.lng < -180 || markerData.position.lng > 180) {
                     console.warn(`Marcador ${index} ('${markerData.name}') tem coordenadas lat/lng fora do intervalo válido. Ignorando.`, markerData);
+                    return;
+                }
+                
+                // Calcula a distância do marcador ao centro do mapa
+                const markerPos = new google.maps.LatLng(markerData.position.lat, markerData.position.lng);
+                const centerPos = new google.maps.LatLng(map.getCenter().lat(), map.getCenter().lng());
+                
+                // Função nativa de haversine para calcular distância aproximada em metros
+                // Podemos usar math diretamente para evitar dependência da biblioteca geometry
+                const distance = calculateDistance(
+                    map.getCenter().lat(), map.getCenter().lng(),
+                    markerData.position.lat, markerData.position.lng
+                );
+                
+                // Se o marcador estiver fora do raio definido, não mostra
+                if (distance > MAX_DISTANCE_RADIUS) {
+                    console.info(`Marcador '${markerData.name}' está a ${distance.toFixed(0)}m do centro, fora do raio de ${MAX_DISTANCE_RADIUS}m. Não será exibido.`);
                     return;
                 }
 
@@ -98,9 +101,6 @@ async function initMap() {
                     title: `${markerData.name}`,
                     content: pin.element,
                 });
-
-                markerBounds.extend(markerData.position); // Adiciona a posição do marcador aos bounds dos marcadores
-                validMarkersCount++;
 
                 let infoWindowContent = `
                     <div class="custom-infowindow" style="max-width: 300px; font-family: Arial, sans-serif;">
@@ -130,16 +130,6 @@ async function initMap() {
                 markers.push(marker);
                 infoWindows.push(infoWindow);
             });
-
-            if (validMarkersCount === 0) {
-                console.warn("Nenhum marcador válido para exibir após filtragem. O mapa permanecerá na visualização definida pelas coordenadas fornecidas.");
-                // O mapa já está ajustado para initialBounds, então não precisamos fazer nada aqui.
-            } else {
-                // Se houver marcadores válidos, ajuste o mapa para incluir todos eles.
-                // Isso pode fazer o mapa dar zoom out se os marcadores estiverem fora dos initialBounds,
-                // ou zoom in se estiverem todos contidos e mais próximos.
-                map.fitBounds(markerBounds, 50); // O 50 é um padding
-            }
         }
 
     } catch (error) {
@@ -148,6 +138,25 @@ async function initMap() {
             mapDiv.innerHTML = `<p style='text-align:center; padding: 20px; color: red;'>Ocorreu um erro ao carregar o mapa: ${error.message}. Verifique o console para mais detalhes.</p>`;
         }
     }
+}
+
+// Função para calcular distância entre dois pontos geográficos (fórmula de Haversine)
+function calculateDistance(lat1, lon1, lat2, lon2) {
+    const R = 6371000; // Raio da Terra em metros
+    const dLat = toRad(lat2 - lat1);
+    const dLon = toRad(lon2 - lon1);
+    const a = 
+        Math.sin(dLat/2) * Math.sin(dLat/2) +
+        Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * 
+        Math.sin(dLon/2) * Math.sin(dLon/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    const distance = R * c;
+    return distance;
+}
+
+// Função auxiliar para converter graus para radianos
+function toRad(degrees) {
+    return degrees * Math.PI / 180;
 }
 
 window.initMap = initMap;
